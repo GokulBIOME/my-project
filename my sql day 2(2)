@@ -1,0 +1,268 @@
+Project 4
+mysql> CREATE TABLE Sales (
+    -> SaleID INT PRIMARY KEY,
+    -> Salesperson VARCHAR(50),
+    -> Region VARCHAR(50),
+    -> Product VARCHAR(50),
+    -> Quantity INT,
+    -> SaleAmount DECIMAL(10,2)
+    -> );
+Query OK, 0 rows affected (0.20 sec)
+
+mysql> INSERT INTO Sales (SaleID, Salesperson, Region, Product, Quantity, SaleAmount) VALUES
+    -> (1, 'Alice', 'North', 'Laptop', 1, 1000.00),
+    -> (2, 'Bob', 'South', 'Mouse', 3, 75.00),
+    -> (3, 'Alice', 'North', 'Monitor', 2, 300.00),
+    -> (4, 'Charlie', 'East', 'Keyboard', 1, 50.00),
+    -> (5, 'Bob', 'South', 'Monitor', 1, 150.00),
+    -> (6, 'Alice', 'North', 'Mouse', 2, 50.00),
+    -> (7, 'Charlie', 'East', 'Laptop', 2, 2000.00),
+    -> (8, 'David', 'West', 'Laptop', 1, 1100.00),
+    -> (9, 'David', 'West', 'Mouse', 4, 100.00),
+    -> (10, 'Eve', 'South', 'Monitor', 3, 450.00),
+    -> (11, 'Eve', 'South', 'Keyboard', 2, 100.00),
+    -> (12, 'Eve', 'South', 'Mouse', 1, 25.00),
+    -> (13, 'Alice', 'North', 'Keyboard', 1, 60.00),
+    -> (14, 'Bob', 'South', 'Laptop', 1, 1200.00),
+    -> (15, 'Charlie', 'East', 'Mouse', 2, 50.00);
+Query OK, 15 rows affected (0.03 sec)
+Records: 15  Duplicates: 0  Warnings: 0
+
+1.Find total salary per department.
+1.mysql> select salesperson, sum(quantity)  from sales group by salesperson;
++-------------+---------------+
+| salesperson | sum(quantity) |
++-------------+---------------+
+| alice       |             6 |
+| bob         |             5 |
+| charlie     |             5 |
+| david       |             5 |
+| eve         |             6 |
++-------------+---------------+
+5 rows in set (0.00 sec)
+2.List departments where total salary exceeds 200000.
+mysql> select salesperson from sales group by salesperson having sum(quantity) > 5;
++-------------+
+| salesperson |
++-------------+
+| alice       |
+| eve         |
++-------------+
+2 rows in set (0.00 sec)
+
+3.Count number of employees in each department.
+mysql> select salesperson, count(*) as productcount from sales group by salesperson;
++-------------+--------------+
+| salesperson | productcount |
++-------------+--------------+
+| alice       |            4 |
+| bob         |            3 |
+| charlie     |            3 |
+| david       |            2 |
+| eve         |            3 |
++-------------+--------------+
+5 rows in set (0.00 sec)
+
+4.List departments with more than 3 employees.
+mysql> select region from sales group by region having sum(saleamount) > 1000;
++--------+
+| region |
++--------+
+| north  |
+| south  |
+| east   |
+| west   |
++--------+
+4 rows in set (0.00 sec)
+
+5.Find average salary by gender.
+mysql> select salesperson from sales group by salesperson having count(*) > 2;
++-------------+
+| salesperson |
++-------------+
+| alice       |
+| bob         |
+| charlie     |
+| eve         |
++-------------+
+4 rows in set (0.00 sec)
+
+6.Show gender-wise employee count, only if count is more than 5.
+mysql> select product, sum(saleamount) as totalsales from sales group by product having sum(saleamount) > 500;
++---------+------------+
+| product | totalsales |
++---------+------------+
+| laptop  |    5300.00 |
+| monitor |     900.00 |
++---------+------------+
+2 rows in set (0.00 sec)
+
+7.List departments with average salary above 60000.
+mysql> select region, product, sum(quantity) as totalqty from sales group by region, product;
++--------+----------+----------+
+| region | product  | totalqty |
++--------+----------+----------+
+| north  | laptop   |        1 |
+| south  | mouse    |        4 |
+| north  | monitor  |        2 |
+| east   | keyboard |        1 |
+| south  | monitor  |        4 |
+| north  | mouse    |        2 |
+| east   | laptop   |        2 |
+| west   | laptop   |        1 |
+| west   | mouse    |        4 |
+| south  | keyboard |        2 |
+| north  | keyboard |        1 |
+| south  | laptop   |        1 |
+| east   | mouse    |        2 |
++--------+----------+----------+
+13 rows in set (0.00 sec)
+
+8.mysql> select salesperson from sales group by salesperson having count(distinct product) > 1;
++-------------+
+| salesperson |
++-------------+
+| alice       |
+| bob         |
+| charlie     |
+| david       |
+| eve         |
++-------------+
+5 rows in set (0.00 sec)
+
+9.mysql> select region, product, avg(quantity) as avgqty from sales group by region, product having avg(quantity) > 1;
++--------+----------+--------+
+| region | product  | avgqty |
++--------+----------+--------+
+| south  | mouse    | 2.0000 |
+| north  | monitor  | 2.0000 |
+| south  | monitor  | 2.0000 |
+| north  | mouse    | 2.0000 |
+| east   | laptop   | 2.0000 |
+| west   | mouse    | 4.0000 |
+| south  | keyboard | 2.0000 |
+| east   | mouse    | 2.0000 |
++--------+----------+--------+
+8 rows in set (0.00 sec)
+
+10.mysql> select salesperson from sales group by salesperson having sum(saleamount) between 500 and 1500;
++-------------+
+| salesperson |
++-------------+
+| alice       |
+| bob         |
+| david       |
+| eve         |
++-------------+
+4 rows in set (0.02 sec)
+
+11.mysql> select product from sales group by product having sum(quantity) > 3;
++----------+
+| product  |
++----------+
+| laptop   |
+| mouse    |
+| monitor  |
+| keyboard |
++----------+
+4 rows in set (0.00 sec)
+
+12.mysql> select distinct salesperson from sales where product = 'laptop';
++-------------+
+| salesperson |
++-------------+
+| alice       |
+| charlie     |
+| david       |
+| bob         |
++-------------+
+4 rows in set (0.00 sec)
+
+13.mysql> select salesperson, region, sum(saleamount) as totalsales from sales group by salesperson, region having sum(saleamount) > 500;
++-------------+--------+------------+
+| salesperson | region | totalsales |
++-------------+--------+------------+
+| alice       | north  |    1410.00 |
+| bob         | south  |    1425.00 |
+| charlie     | east   |    2100.00 |
+| david       | west   |    1200.00 |
+| eve         | south  |     575.00 |
++-------------+--------+------------+
+5 rows in set (0.00 sec)
+
+14.mysql> select salesperson, region from sales group by salesperson, region having count(distinct product) >= 2;
++-------------+--------+
+| salesperson | region |
++-------------+--------+
+| alice       | north  |
+| bob         | south  |
+| charlie     | east   |
+| david       | west   |
+| eve         | south  |
++-------------+--------+
+5 rows in set (0.00 sec)
+
+15.mysql> select product from sales group by product having count(distinct region) > 1;
++----------+
+| product  |
++----------+
+| keyboard |
+| laptop   |
+| monitor  |
+| mouse    |
++----------+
+4 rows in set (0.00 sec)
+
+
+
+16.mysql> select product, count(*) as salecount from sales group by product having count(*) >= 2;
++----------+-----------+
+| product  | salecount |
++----------+-----------+
+| laptop   |         4 |
+| mouse    |         5 |
+| monitor  |         3 |
+| keyboard |         3 |
++----------+-----------+
+4 rows in set (0.00 sec)
+
+17.mysql> select region, salesperson, sum(quantity) as totalqty from sales group by region, salesperson;
++--------+-------------+----------+
+| region | salesperson | totalqty |
++--------+-------------+----------+
+| north  | alice       |        6 |
+| south  | bob         |        5 |
+| east   | charlie     |        5 |
+| west   | david       |        5 |
+| south  | eve         |        6 |
++--------+-------------+----------+
+5 rows in set (0.00 sec)
+
+18.mysql> select salesperson from sales group by salesperson having count(*) > 3 and sum(saleamount) > 1000;
++-------------+
+| salesperson |
++-------------+
+| alice       |
++-------------+
+1 row in set (0.01 sec)
+
+19.mysql> select region, avg(saleamount) as avgsales from sales group by region having avg(saleamount) > 200;
++--------+------------+
+| region | avgsales   |
++--------+------------+
+| north  | 352.500000 |
+| south  | 333.333333 |
+| east   | 700.000000 |
+| west   | 600.000000 |
++--------+------------+
+4 rows in set (0.00 sec)
+
+20.mysql> select region, product from sales group by region, product having sum(quantity) > 3;
++--------+---------+
+| region | product |
++--------+---------+
+| south  | mouse   |
+| south  | monitor |
+| west   | mouse   |
++--------+---------+
+3 rows in set (0.00 sec)
