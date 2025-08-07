@@ -1,0 +1,297 @@
+Employee Table
+Step 1: Create the Employee Table
+CREATE TABLE Employee (
+    EmpID INT PRIMARY KEY,
+    Name VARCHAR(50),
+    Department VARCHAR(50),
+    Gender VARCHAR(10),
+    Salary DECIMAL(10, 2),
+    Age INT,
+    Experience INT
+);
+O/p:Query OK, 0 rows affected (0.15 sec)
+Inserting the table
+
+INSERT INTO Employee (EmpID, Name, Department, Gender, Salary, Age, Experience) VALUES
+(1, 'Alice', 'HR', 'Female', 50000, 28, 3),
+(2, 'Bob', 'Finance', 'Male', 60000, 32, 5),
+(3, 'Charlie', 'IT', 'Male', 70000, 30, 6),
+(4, 'David', 'HR', 'Male', 48000, 45, 20),
+(5, 'Eva', 'IT', 'Female', 72000, 29, 4),
+(6, 'Frank', 'Finance', 'Male', 58000, 35, 8),
+(7, 'Grace', 'Marketing', 'Female', 50000, 27, 2),
+(8, 'Hannah', 'IT', 'Female', 75000, 31, 7),
+(9, 'Ivy', 'Finance', 'Female', 62000, 26, 3),
+(10, 'Jack', 'Marketing', 'Male', 52000, 38, 10),
+(11, 'Kiran', 'IT', 'Male', 68000, 33, 9),
+(12, 'Lily', 'HR', 'Female', 55000, 40, 15),
+(13, 'Mohan', 'Finance', 'Male', 61000, 29, 4),
+(14, 'Nina', 'Marketing', 'Female', 53000, 36, 11),
+(15, 'Oscar', 'IT', 'Male', 71000, 34, 10);
+
+Query OK, 15 rows affected (0.04 sec)
+Records: 15  Duplicates: 0  Warnings: 0
+
+mysql> select*from employee;
++-------+---------+------------+--------+----------+------+------------+
+| EmpID | Name    | Department | Gender | Salary   | Age  | Experience |
++-------+---------+------------+--------+----------+------+------------+
+|     1 | Alice   | HR         | Female | 50000.00 |   28 |          3 |
+|     2 | Bob     | Finance    | Male   | 60000.00 |   32 |          5 |
+|     3 | Charlie | IT         | Male   | 70000.00 |   30 |          6 |
+|     4 | David   | HR         | Male   | 48000.00 |   45 |         20 |
+|     5 | Eva     | IT         | Female | 72000.00 |   29 |          4 |
+|     6 | Frank   | Finance    | Male   | 58000.00 |   35 |          8 |
+|     7 | Grace   | Marketing  | Female | 50000.00 |   27 |          2 |
+|     8 | Hannah  | IT         | Female | 75000.00 |   31 |          7 |
+|     9 | Ivy     | Finance    | Female | 62000.00 |   26 |          3 |
+|    10 | Jack    | Marketing  | Male   | 52000.00 |   38 |         10 |
+|    11 | Kiran   | IT         | Male   | 68000.00 |   33 |          9 |
+|    12 | Lily    | HR         | Female | 55000.00 |   40 |         15 |
+|    13 | Mohan   | Finance    | Male   | 61000.00 |   29 |          4 |
+|    14 | Nina    | Marketing  | Female | 53000.00 |   36 |         11 |
+|    15 | Oscar   | IT         | Male   | 71000.00 |   34 |         10 |
++-------+---------+------------+--------+----------+------+------------+
+15 rows in set (0.01 sec)
+
+
+Question:-
+A.	Find total salary per department.
+mysql> select department,sum(salary) from employee group by department;
++------------+-------------+
+| department | sum(salary) |
++------------+-------------+
+| HR         |   153000.00 |
+| Finance    |   241000.00 |
+| IT         |   356000.00 |
+| Marketing  |   155000.00 |
++------------+-------------+
+4 rows in set (0.01 sec)
+B.	List departments where total salary exceeds 200000.
+mysql> select department,sum(salary) from employee group by department having sum(salary) > 200000;
++------------+-------------+
+| department | sum(salary) |
++------------+-------------+
+| Finance    |   241000.00 |
+| IT         |   356000.00 |
++------------+-------------+
+2 rows in set (0.01 sec)
+C.	Count number of employees in each department.
+mysql> select count(name) from employee group by department;
++-------------+
+| count(name) |
++-------------+
+|           3 |
+|           4 |
+|           5 |
+|           3 |
++-------------+
+4 rows in set (0.00 sec)
+D.	List departments with more than 3 employees.
+mysql> select count(name) ,department from employee group by department;
++-------------+------------+
+| count(name) | department |
++-------------+------------+
+|           3 | HR         |
+|           4 | Finance    |
+|           5 | IT         |
+|           3 | Marketing  |
++-------------+------------+
+4 rows in set (0.00 sec)
+E.	Find average salary by gender.
+mysql> select avg(salary),gender from employee group by gender;
++--------------+--------+
+| avg(salary)  | gender |
++--------------+--------+
+| 59571.428571 | Female |
+| 61000.000000 | Male   |
++--------------+--------+
+2 rows in set (0.00 sec)
+F.	Show gender-wise employee count, only if count is more than 5.
+mysql> select count(name) ,gender from employee group by gender having count(name)>5;
++-------------+--------+
+| count(name) | gender |
++-------------+--------+
+|           7 | Female |
+|           8 | Male   |
++-------------+--------+
+2 rows in set (0.00 sec)
+G.	List departments with average salary above 60000.
+mysql> select count(name) ,department from employee group by department having avg(salary)>60000;
++-------------+------------+
+| count(name) | department |
++-------------+------------+
+|           4 | Finance    |
+|           5 | IT         |
++-------------+------------+
+2 rows in set (0.00 sec)
+H.	List number of male and female employees per department.
+mysql> select count(name) ,department,gender from employee group by department,gender;
++-------------+------------+--------+
+| count(name) | department | gender |
++-------------+------------+--------+
+|           2 | HR         | Female |
+|           3 | Finance    | Male   |
+|           3 | IT         | Male   |
+|           1 | HR         | Male   |
+|           2 | IT         | Female |
+|           2 | Marketing  | Female |
+|           1 | Finance    | Female |
+|           1 | Marketing  | Male   |
++-------------+------------+--------+
+8 rows in set (0.00 sec)
+I.	Find departments where the average experience is more than 7 years.
+mysql> select avg(experience),department from employee group by department having avg(experience)>7;
++-----------------+------------+
+| avg(experience) | department |
++-----------------+------------+
+|         12.6667 | HR         |
+|          7.2000 | IT         |
+|          7.6667 | Marketing  |
++-----------------+------------+
+3 rows in set (0.00 sec)
+J.	List departments where the max salary is above 70000.
+mysql> select sum(salary),department from employee group by department having sum(salary)>70000;
++-------------+------------+
+| sum(salary) | department |
++-------------+------------+
+|   153000.00 | HR         |
+|   241000.00 | Finance    |
+|   356000.00 | IT         |
+|   155000.00 | Marketing  |
++-------------+------------+
+4 rows in set (0.00 sec)
+K.	Find average age by department.
+mysql> select avg(age),department from employee group by department;
++----------+------------+
+| avg(age) | department |
++----------+------------+
+|  37.6667 | HR         |
+|  30.5000 | Finance    |
+|  31.4000 | IT         |
+|  33.6667 | Marketing  |
++----------+------------+
+4 rows in set (0.00 sec)
+L.	List all departments where female employees earn more than 60000 on average.
+mysql> select avg(salary),department,gender from employee group by department,gender having avg(salary)>60000;
++--------------+------------+--------+
+| avg(salary)  | department | gender |
++--------------+------------+--------+
+| 69666.666667 | IT         | Male   |
+| 73500.000000 | IT         | Female |
+| 62000.000000 | Finance    | Female |
++--------------+------------+--------+
+3 rows in set (0.00 sec)
+M.	Find departments with total experience greater than 20 years.
+mysql> select sum(experience),department from employee group by department having sum(experience)>20;
++-----------------+------------+
+| sum(experience) | department |
++-----------------+------------+
+|              38 | HR         |
+|              36 | IT         |
+|              23 | Marketing  |
++-----------------+------------+
+3 rows in set (0.00 sec)
+N.	Find gender-wise average experience per department.
+mysql> select avg(experience),gender,department from employee group by gender,department;
++-----------------+--------+------------+
+| avg(experience) | gender | department |
++-----------------+--------+------------+
+|          9.0000 | Female | HR         |
+|          5.6667 | Male   | Finance    |
+|          8.3333 | Male   | IT         |
+|         20.0000 | Male   | HR         |
+|          5.5000 | Female | IT         |
+|          6.5000 | Female | Marketing  |
+|          3.0000 | Female | Finance    |
+|         10.0000 | Male   | Marketing  |
++-----------------+--------+------------+
+8 rows in set (0.06 sec)
+O.	List departments where average age is under 30.
+mysql> select department from employee group by department having avg(age) <30;
+Empty set (0.00 sec)
+
+mysql>
+P.	Find departments where more than one female is working.
+
+mysql> select department,count(department) from employee where gender= 'female'group by department having count(department)>1;
++------------+-------------------+
+| department | count(department) |
++------------+-------------------+
+| HR         |                 2 |
+| IT         |                 2 |
+| Marketing  |                 2 |
++------------+-------------------+
+3 rows in set (0.01 sec)
+Q.	Find departments where both male and female employees exist.
+mysql> select department from employee where gender ='male'or'female'group by department;
++------------+
+| department |
++------------+
+| Finance    |
+| IT         |
+| HR         |
+| Marketing  |
++------------+
+4 rows in set, 1 warning (0.01 sec)
+R.	List departments with highest average experience.
+mysql> select avg(experience) from employee having max(experience);
++-----------------+
+| avg(experience) |
++-----------------+
+|          7.8000 |
++-----------------+
+1 row in set (0.01 sec)
+S.	Find gender and department combinations where total salary is above 100000.
+mysql> select department,gender,sum(salary) from employee group by department,gender having sum(salary)>100000;
++------------+--------+-------------+
+| department | gender | sum(salary) |
++------------+--------+-------------+
+| HR         | Female |   105000.00 |
+| Finance    | Male   |   179000.00 |
+| IT         | Male   |   209000.00 |
+| IT         | Female |   147000.00 |
+| Marketing  | Female |   103000.00 |
++------------+--------+-------------+
+5 rows in set (0.01 sec)
+T.	Show department-wise count of employees under age 35.
+mysql> select count(name),department,age from employee where age > 35 group by department,age having count(name);
++-------------+------------+------+
+| count(name) | department | age  |
++-------------+------------+------+
+|           1 | HR         |   45 |
+|           1 | Marketing  |   38 |
+|           1 | HR         |   40 |
+|           1 | Marketing  |   36 |
++-------------+------------+------+
+4 rows in set (0.00 sec)
+U.	List top 3 departments with highest total salary.
+mysql> select department,sum(salary) from employee group by department having sum(salary) order by sum(salary)desc limit 3;
++------------+-------------+
+| department | sum(salary) |
++------------+-------------+
+| IT         |   356000.00 |
+| Finance    |   241000.00 |
+| Marketing  |   155000.00 |
++------------+-------------+
+3 rows in set (0.00 sec)
+V.	List departments where all employees have more than 5 years of experience.
+mysql> select department,max(experience) from employee group by department having max(experience) > 5;
++------------+-----------------+
+| department | max(experience) |
++------------+-----------------+
+| HR         |              20 |
+| Finance    |               8 |
+| IT         |              10 |
+| Marketing  |              11 |
++------------+-----------------+
+4 rows in set (0.01 sec)
+W.	Find departments where at least one employee earns less than 55000.
+mysql> select department,min(salary) from employee group by department having min(salary)<55000;
++------------+-------------+
+| department | min(salary) |
++------------+-------------+
+| HR         |    48000.00 |
+| Marketing  |    50000.00 |
++------------+-------------+
+2 rows in set (0.00 sec)
